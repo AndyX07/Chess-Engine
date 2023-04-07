@@ -13,12 +13,7 @@ Chess AI Created in C++ using SDL2. The algorithm uses minimax and is made more 
 - SDl2
 
 ## Requirements
-Make sure you have SDL2 installed as well as all dependencies <br/>
-SDL2 installation for CodeBlocks: http://fredericgoset.ovh/sdl/en/installation.html
-
-## Setup
-- Download the project
-- Run the project using the Chess.cbp file in src
+Make sure you have SDL2 installed as well as all required dependencies <br/>
 
 ## Inspiration
 This project was inspired by Sebastian Lague on Youtube. <br/>

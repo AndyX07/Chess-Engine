@@ -1,6 +1,7 @@
 #include "SDL.h"
 #include "Board.h"
 #include "bits/stdc++.h"
+#include <unistd.h>
 
 using namespace std;
 
@@ -155,6 +156,7 @@ void Board::mouse(SDL_MouseButtonEvent e){
                     }
                 }
                 if(!ismove) return;
+                SDL_RenderClear(renderer);
                 generateBoard();
                 SDL_Event e;
                 bool quit = 0;
@@ -169,6 +171,7 @@ void Board::mouse(SDL_MouseButtonEvent e){
                                 resetG();
                                 if(y1==0&&pieces[x1][y1]=='P')pieces[x1][y1]='Q';
                                 if(y1==7&&pieces[x1][y1]=='p')pieces[x1][y1]='q';
+                                SDL_RenderClear(renderer);
                                 generateBoard();
                                 quit = 1;
                                 turn = !turn;
@@ -179,6 +182,7 @@ void Board::mouse(SDL_MouseButtonEvent e){
                                 return;
                             }
                         }
+                        usleep(10);
                     }
                 }
             }

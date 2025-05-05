@@ -2,6 +2,7 @@
 #include "Board.h"
 #include "bits/stdc++.h"
 #include <unistd.h>
+#include "SDL_image.h"
 
 using namespace std;
 
@@ -40,7 +41,6 @@ Board::Board()
     pieces[5][7]='B';
     pieces[6][7]='N';
     pieces[7][7]='R';
-
 }
 
 void Board::drawRect(SDL_Color c, int x1, int y1, int w, int h){
@@ -83,45 +83,45 @@ void Board::generateBoard(){
             char c = pieces[i][j];
             if(c!='a'){
                 SDL_Surface *img;
-                if(islower(c)){
-                    if(c=='p'){
-                        img = SDL_LoadBMP("../images/bpawn.bmp");
+                if (islower(c)) {
+                    if (c == 'p') {
+                        img = IMG_Load("../images/bpawn.png");
                     }
-                    else if(c=='r'){
-                        img = SDL_LoadBMP("../images/brook.bmp");
+                    else if (c == 'r') {
+                        img = IMG_Load("../images/brook.png");
                     }
-                    else if(c=='n'){
-                        img = SDL_LoadBMP("../images/bknight.bmp");
+                    else if (c == 'n') {
+                        img = IMG_Load("../images/bknight.png");
                     }
-                    else if(c=='b'){
-                        img = SDL_LoadBMP("../images/bbishop.bmp");
+                    else if (c == 'b') {
+                        img = IMG_Load("../images/bbishop.png");
                     }
-                    else if(c=='q'){
-                        img = SDL_LoadBMP("../images/bqueen.bmp");
+                    else if (c == 'q') {
+                        img = IMG_Load("../images/bqueen.png");
                     }
-                    else if(c=='k'){
-                        img = SDL_LoadBMP("../images/bking.bmp");
+                    else if (c == 'k') {
+                        img = IMG_Load("../images/bking.png");
                     }
                 }
-                else{
-                    c=tolower(c);
-                    if(c=='p'){
-                        img = SDL_LoadBMP("../images/wpawn.bmp");
+                else {
+                    c = tolower(c);
+                    if (c == 'p') {
+                        img = IMG_Load("../images/wpawn.png");
                     }
-                    else if(c=='r'){
-                        img = SDL_LoadBMP("../images/wrook.bmp");
+                    else if (c == 'r') {
+                        img = IMG_Load("../images/wrook.png");
                     }
-                    else if(c=='n'){
-                        img = SDL_LoadBMP("../images/wknight.bmp");
+                    else if (c == 'n') {
+                        img = IMG_Load("../images/wknight.png");
                     }
-                    else if(c=='b'){
-                        img = SDL_LoadBMP("../images/wbishop.bmp");
+                    else if (c == 'b') {
+                        img = IMG_Load("../images/wbishop.png");
                     }
-                    else if(c=='q'){
-                        img = SDL_LoadBMP("../images/wqueen.bmp");
+                    else if (c == 'q') {
+                        img = IMG_Load("../images/wqueen.png");
                     }
-                    else if(c=='k'){
-                        img = SDL_LoadBMP("../images/wking.bmp");
+                    else if (c == 'k') {
+                        img = IMG_Load("../images/wking.png");
                     }
                 }
                 placePiece(img, i*75+5, j*75+5, 60, 60);
@@ -593,6 +593,7 @@ pair<vector<int>, int> Board::minimax(char position[][8], int depth, int alpha, 
 void Board::close(){
     SDL_DestroyWindow(window);
 	window = NULL;
+	IMG_Quit();
 	SDL_Quit();
 }
 

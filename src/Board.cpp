@@ -1,10 +1,22 @@
 #include "SDL.h"
 #include "Board.h"
-#include "bits/stdc++.h"
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <chrono>
+#include <random>
+#include <climits>
+#include <cstring>
 #include <unistd.h>
 #include "SDL_image.h"
 
 using namespace std;
+
+const int TILE_SIZE = 75;
+const int PIECE_SIZE = 60;
+const char EMPTY_SQUARE = 'a';
+
+unordered_map<char, SDL_Surface*> pieceImages;
 
 Board::Board()
 {
@@ -41,25 +53,31 @@ Board::Board()
     pieces[5][7]='B';
     pieces[6][7]='N';
     pieces[7][7]='R';
+    pieceImages['p'] = IMG_Load("../images/bpawn.png");
+    pieceImages['P'] = IMG_Load("../images/wpawn.png");
+    pieceImages['r'] = IMG_Load("../images/brook.png");
+    pieceImages['R'] = IMG_Load("../images/wrook.png");
+    pieceImages['n'] = IMG_Load("../images/bknight.png");
+    pieceImages['N'] = IMG_Load("../images/wknight.png");
+    pieceImages['b'] = IMG_Load("../images/bbishop.png");
+    pieceImages['B'] = IMG_Load("../images/wbishop.png");
+    pieceImages['q'] = IMG_Load("../images/bqueen.png");
+    pieceImages['Q'] = IMG_Load("../images/wqueen.png");
+    pieceImages['k'] = IMG_Load("../images/bking.png");
+    pieceImages['K'] = IMG_Load("../images/wking.png");
 }
 
 void Board::drawRect(SDL_Color c, int x1, int y1, int w, int h){
     SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-    SDL_Rect rect;
-    rect.x=x1;
-    rect.y=y1;
-    rect.w = w;
-    rect.h = h;
+    SDL_Rect rect = {x1, y1, w, h};
     SDL_RenderFillRect(renderer, &rect);
-    SDL_RenderPresent(renderer);
 }
 
 void Board::placePiece( SDL_Surface *img, int x, int y, int w, int h){
-    SDL_SetRenderTarget(renderer, NULL);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, img);
     SDL_Rect rect = {x, y, w, h};
     SDL_RenderCopy(renderer, texture, NULL, &rect);
-    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(texture);
 }
 
 void Board::resetG(){
@@ -67,67 +85,29 @@ void Board::resetG(){
 }
 
 void Board::generateBoard(){
-    for(int i = 0; i < 8; i++){
-        for(int j = 0; j < 8; j++){
-            if(g[i][j]) drawRect(green, i*75, j*75, 75, 75);
-            else if((i+j)%2==0){
-                drawRect(white, i*75, j*75, 75, 75);
-            }
-            else{
-                drawRect(brown, i*75, j*75, 75, 75);
-            }
+    SDL_RenderClear(renderer);
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (g[i][j])
+                drawRect(green, i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            else if ((i + j) % 2 == 0)
+                drawRect(white, i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            else
+                drawRect(brown, i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         }
     }
-    for(int i = 0; i < 8; i++){
-        for(int j = 0; j < 8; j++){
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
             char c = pieces[i][j];
-            if(c!='a'){
-                SDL_Surface *img;
-                if (islower(c)) {
-                    if (c == 'p') {
-                        img = IMG_Load("../images/bpawn.png");
-                    }
-                    else if (c == 'r') {
-                        img = IMG_Load("../images/brook.png");
-                    }
-                    else if (c == 'n') {
-                        img = IMG_Load("../images/bknight.png");
-                    }
-                    else if (c == 'b') {
-                        img = IMG_Load("../images/bbishop.png");
-                    }
-                    else if (c == 'q') {
-                        img = IMG_Load("../images/bqueen.png");
-                    }
-                    else if (c == 'k') {
-                        img = IMG_Load("../images/bking.png");
-                    }
+            if (c != EMPTY_SQUARE) {
+                SDL_Surface* img = pieceImages[c];
+                if (img) {
+                    placePiece(img, i * TILE_SIZE + 5, j * TILE_SIZE + 5, PIECE_SIZE, PIECE_SIZE);
                 }
-                else {
-                    c = tolower(c);
-                    if (c == 'p') {
-                        img = IMG_Load("../images/wpawn.png");
-                    }
-                    else if (c == 'r') {
-                        img = IMG_Load("../images/wrook.png");
-                    }
-                    else if (c == 'n') {
-                        img = IMG_Load("../images/wknight.png");
-                    }
-                    else if (c == 'b') {
-                        img = IMG_Load("../images/wbishop.png");
-                    }
-                    else if (c == 'q') {
-                        img = IMG_Load("../images/wqueen.png");
-                    }
-                    else if (c == 'k') {
-                        img = IMG_Load("../images/wking.png");
-                    }
-                }
-                placePiece(img, i*75+5, j*75+5, 60, 60);
             }
         }
     }
+    SDL_RenderPresent(renderer);
 }
 
 void Board::makeMove(int x, int y, int x1, int y1){
@@ -591,13 +571,28 @@ pair<vector<int>, int> Board::minimax(char position[][8], int depth, int alpha, 
 }
 
 void Board::close(){
-    SDL_DestroyWindow(window);
-	window = NULL;
-	IMG_Quit();
-	SDL_Quit();
+    if (isClosed) return;
+    if (renderer) {
+        SDL_DestroyRenderer(renderer);
+        renderer = nullptr;
+    }
+    if (window) {
+        SDL_DestroyWindow(window);
+        window = nullptr;
+    }
+    IMG_Quit();
+    SDL_Quit();
+    isClosed = true;
 }
 
 Board::~Board()
 {
-    //dtor
+    for (auto& [key, surface] : pieceImages) {
+        if (surface) {
+            SDL_FreeSurface(surface);
+            surface = nullptr;
+        }
+    }
+
+    close();
 }

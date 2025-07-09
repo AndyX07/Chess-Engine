@@ -1,4 +1,4 @@
-# Chess-Game
+# Chess-AI
 
 Chess AI Created in C++ using SDL2. The algorithm uses minimax and is made more efficient by alpha beta pruning
 

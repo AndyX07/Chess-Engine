@@ -20,6 +20,7 @@ class Board
         bool possible(int x, int y, int x1, int y1, char c, bool inCheck, char position[][8]);
         char getPiece(int x, int y);
         void setPiece(int x, int y, char c);
+        bool getTurn();
 
         bool pawnPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]);
         bool rookPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]);

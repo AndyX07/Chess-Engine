@@ -375,6 +375,10 @@ bool Board::getColor(int x, int y, char position[][8]){
     return isupper(position[x][y]);
 }
 
+bool Board::getTurn(){
+    return turn;
+}
+
 bool Board::check(bool pieceColor, char position[][8]){
     int x, y;
     for(int i = 0; i < 8; i++){

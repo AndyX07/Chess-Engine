@@ -21,12 +21,12 @@ class Board
         char getPiece(int x, int y);
         void setPiece(int x, int y, char c);
 
-        bool pawnPossible(int x, int y, int x1, int y1, bool b, char position[][8]);
-        bool rookPossible(int x, int y, int x1, int y1, bool b, char position[][8]);
-        bool knightPossible(int x, int y, int x1, int y1, bool b, char position[][8]);
-        bool bishopPossible(int x, int y, int x1, int y1, bool b, char position[][8]);
-        bool queenPossible(int x, int y, int x1, int y1, bool b, char position[][8]);
-        bool kingPossible(int x, int y, int x1, int y1, bool b, char position[][8]);
+        bool pawnPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]);
+        bool rookPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]);
+        bool knightPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]);
+        bool bishopPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]);
+        bool queenPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]);
+        bool kingPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]);
 
         bool check(bool b, char position[][8]);
         bool checkMate(bool b);

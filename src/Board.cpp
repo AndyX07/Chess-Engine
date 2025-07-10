@@ -181,10 +181,10 @@ void Board::computerMove(){
     }
 }
 
-bool Board::pawnPossible(int x, int y, int x1, int y1, bool b, char position[][8]){
+bool Board::pawnPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]){
     if(x1>=0&&y1>=0&&x1<8&&y1<8&&(x!=x1||y!=y1)){
         char c = position[x1][y1];
-        if(!b){
+        if(!pieceColor){
             //black
             if(isupper(c)&&y1-y==1&&abs(x1-x)==1){
                 return 1;
@@ -220,11 +220,11 @@ bool Board::pawnPossible(int x, int y, int x1, int y1, bool b, char position[][8
     return 0;
 }
 
-bool Board::rookPossible(int x, int y, int x1, int y1, bool b, char position[][8]){
+bool Board::rookPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]){
     if(x1>=0&&y1>=0&&x1<8&&y1<8&&(x!=x1||y!=y1)){
         char c = position[x1][y1];
         if(x==x1){
-            if(c=='a'||(b==0&&isupper(c))||(b==1&&islower(c))){
+            if(c=='a'||(!pieceColor&&isupper(c))||(pieceColor&&islower(c))){
                 if(y1>y){
                     for(int i = y+1; i<y1; i++){
                         if(position[x][i]!='a') return 0;
@@ -240,7 +240,7 @@ bool Board::rookPossible(int x, int y, int x1, int y1, bool b, char position[][8
             }
         }
         if(y==y1){
-            if(c=='a'||(b==0&&isupper(c))||(b==1&&islower(c))){
+            if(c=='a'||(!pieceColor&&isupper(c))||(pieceColor&&islower(c))){
                 if(x1>x){
                     for(int i = x+1; i<x1; i++){
                         if(position[i][y]!='a') return 0;
@@ -259,10 +259,10 @@ bool Board::rookPossible(int x, int y, int x1, int y1, bool b, char position[][8
     return 0;
 }
 
-bool Board::knightPossible(int x, int y, int x1, int y1, bool b, char position[][8]){
+bool Board::knightPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]){
     if(x1>=0&&y1>=0&&x1<8&&y1<8&&(x!=x1||y!=y1)){
         char c = position[x1][y1];
-        if(c=='a'||(b==0&&isupper(c))||(b==1&&islower(c))){
+        if(c=='a'||(!pieceColor&&isupper(c))||(pieceColor&&islower(c))){
             if((abs(x-x1)==1&&abs(y-y1)==2)||(abs(x-x1)==2&&abs(y-y1)==1)){
                 return 1;
             }
@@ -272,10 +272,10 @@ bool Board::knightPossible(int x, int y, int x1, int y1, bool b, char position[]
     return 0;
 }
 
-bool Board::bishopPossible(int x, int y, int x1, int y1, bool b, char position[][8]){
+bool Board::bishopPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]){
     if(x1>=0&&y1>=0&&x1<8&&y1<8&&(x!=x1||y!=y1)){
-        if((b==1&&isupper(position[x1][y1])))return 0;
-        if((b==0&&position[x1][y1]!='a'&&islower(position[x1][y1]))) return 0;
+        if((pieceColor&&isupper(position[x1][y1])))return 0;
+        if((!pieceColor&&position[x1][y1]!='a'&&islower(position[x1][y1]))) return 0;
         char c = position[x1][y1];
         if(x+y==x1+y1 || x-x1==y-y1){
             int xc, yc;
@@ -303,14 +303,14 @@ bool Board::bishopPossible(int x, int y, int x1, int y1, bool b, char position[]
     return 0;
 }
 
-bool Board::queenPossible(int x, int y, int x1, int y1, bool b, char position[][8]){
-    if(bishopPossible(x, y, x1, y1, b, position)||rookPossible(x, y, x1, y1, b, position))return 1;
+bool Board::queenPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]){
+    if(bishopPossible(x, y, x1, y1, pieceColor, position)||rookPossible(x, y, x1, y1, pieceColor, position))return 1;
     return 0;
 }
 
-bool Board::kingPossible(int x, int y, int x1, int y1, bool b, char position[][8]){
+bool Board::kingPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]){
     if(x1>=0&&y1>=0&&x1<8&&y1<8){
-        if(position[x1][y1]=='a'||b!=getColor(x1, y1, position)){
+        if(position[x1][y1]=='a'||pieceColor!=getColor(x1, y1, position)){
             int d1 = abs(x-x1);
             int d2 = abs(y-y1);
             if(d1==0&&d2==1)return 1;
@@ -328,40 +328,40 @@ bool Board::kingPossible(int x, int y, int x1, int y1, bool b, char position[][8
 }
 
 bool Board::possible(int x, int y, int x1, int y1, char c, bool m, char position[][8]){
-    bool b;
+    bool pieceColor;
     bool res;
     char originalPiece = position[x1][y1];
     if(isupper(c)){
-        b=1;
+        pieceColor=1;
     }
     else{
-        b=0;
+        pieceColor=0;
     }
     c=tolower(c);
     if(c=='p'){
-        res = pawnPossible(x, y, x1, y1, b, position);
+        res = pawnPossible(x, y, x1, y1, pieceColor, position);
     }
     else if(c=='r'){
-        res = rookPossible(x, y, x1, y1, b, position);
+        res = rookPossible(x, y, x1, y1, pieceColor, position);
     }
     else if(c=='n'){
-        res = knightPossible(x, y, x1, y1, b, position);
+        res = knightPossible(x, y, x1, y1, pieceColor, position);
     }
     else if(c=='b'){
-        res = bishopPossible(x, y, x1, y1, b, position);
+        res = bishopPossible(x, y, x1, y1, pieceColor, position);
     }
     else if(c=='k'){
-        res = kingPossible(x, y, x1, y1, b, position);
+        res = kingPossible(x, y, x1, y1, pieceColor, position);
     }
     else if(c=='q'){
-        res = queenPossible(x, y, x1, y1, b, position);
+        res = queenPossible(x, y, x1, y1, pieceColor, position);
     }
     if(!m){
         return res;
     }
     if(!res)return 0;
     makeMove(x, y, x1, y1);
-    if(check(b, position)){
+    if(check(pieceColor, position)){
         makeMoveP(position, x1, y1, x, y);
         position[x1][y1] = originalPiece;
         return 0;
@@ -375,11 +375,11 @@ bool Board::getColor(int x, int y, char position[][8]){
     return isupper(position[x][y]);
 }
 
-bool Board::check(bool b, char position[][8]){
+bool Board::check(bool pieceColor, char position[][8]){
     int x, y;
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
-            if(tolower(position[i][j])=='k'&&getColor(i, j, position)==b){
+            if(tolower(position[i][j])=='k'&&getColor(i, j, position)==pieceColor){
                 x=i, y=j;
                 break;
             }
@@ -398,21 +398,21 @@ bool Board::check(bool b, char position[][8]){
     return 0;
 }
 
-bool Board::checkMate(bool b){
+bool Board::checkMate(bool pieceColor){
     int x, y;
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
-            if(tolower(pieces[i][j])=='k' && getColor(i, j, pieces)==b){
+            if(tolower(pieces[i][j])=='k' && getColor(i, j, pieces)==pieceColor){
                 x = i;
                 y = j;
                 break;
             }
         }
     }
-    if(!check(b, pieces)) return 0;
+    if(!check(pieceColor, pieces)) return 0;
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
-            if(pieces[i][j]!='a'&&getColor(i, j, pieces)==b){
+            if(pieces[i][j]!='a'&&getColor(i, j, pieces)==pieceColor){
                 for(int k = 0; k < 8; k++){
                     for(int l = 0; l < 8; l++){
                         if(possible(i, j, k, l, pieces[i][j], 1, pieces)){
@@ -426,12 +426,12 @@ bool Board::checkMate(bool b){
     return 1;
 }
 
-bool Board::staleMate(bool b){
-    if(!check(b, pieces)){
+bool Board::staleMate(bool pieceColor){
+    if(!check(pieceColor, pieces)){
         int x, y;
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if(tolower(pieces[i][j])=='k' && getColor(i, j, pieces)==b){
+                if(tolower(pieces[i][j])=='k' && getColor(i, j, pieces)==pieceColor){
                     x = i;
                     y = j;
                     break;
@@ -440,7 +440,7 @@ bool Board::staleMate(bool b){
         }
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if(pieces[i][j]!='a'&&getColor(i, j, pieces)==b){
+                if(pieces[i][j]!='a'&&getColor(i, j, pieces)==pieceColor){
                     for(int k = 0; k < 8; k++){
                         for(int l = 0; l < 8; l++){
                             if(possible(i, j, k, l, pieces[i][j], 1, pieces)){
@@ -461,33 +461,33 @@ int Board::eval(char position[][8]){
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
             char c = position[i][j];
-            bool b = 0;
+            bool pieceColor = 0;
             if(isupper(c)){
-                b=1;
+                pieceColor=1;
             }
             c=tolower(c);
             if(c=='p'){
-                if(b) score+=10;
+                if(pieceColor) score+=10;
                 else score-=10;
             }
             else if(c=='r'){
-                if(b) score+=50;
+                if(pieceColor) score+=50;
                 else score-=50;
             }
             else if(c=='n'){
-                if(b) score+=30;
+                if(pieceColor) score+=30;
                 else score-=30;
             }
             else if(c=='b'){
-                if(b) score+=30;
+                if(pieceColor) score+=30;
                 else score-=30;
             }
             else if(c=='k'){
-                if(b) score+=900;
+                if(pieceColor) score+=900;
                 else score-=900;
             }
             else if(c=='q'){
-                if(b) score+=90;
+                if(pieceColor) score+=90;
                 else score-=90;
             }
         }
@@ -495,12 +495,12 @@ int Board::eval(char position[][8]){
     return score;
 }
 
-void Board::getAllMoves(bool b, char position[][8], vector<vector<int>> &ans){
+void Board::getAllMoves(bool pieceColor, char position[][8], vector<vector<int>> &ans){
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
             for(int k = 0; k < 8; k++){
                 for(int l = 0; l < 8; l++){
-                    if(make_pair(i, j)!=make_pair(k, l)&&position[i][j]!='a'&&getColor(i, j, position)==b&&possible(i, j, k, l, position[i][j], 1, position)){
+                    if(make_pair(i, j)!=make_pair(k, l)&&position[i][j]!='a'&&getColor(i, j, position)==pieceColor&&possible(i, j, k, l, position[i][j], 1, position)){
                         ans.push_back({i, j, k, l});
                     }
                 }

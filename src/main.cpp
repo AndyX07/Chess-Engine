@@ -1,15 +1,12 @@
-#include "SDL.h"
 #include "Board.h"
-#include "SDL_image.h"
+#include "MoveGen.h"
 #include <iostream>
-
-using namespace std;
 
 int main(int argc, char *argv[]){
 
-    bool quit=0;
+    bool quit=false;
     SDL_Event e;
-    Board cb = Board();
+    Board cb;
     cb.generateBoard();
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {
@@ -20,12 +17,12 @@ int main(int argc, char *argv[]){
                 cb.mouse(e.button);
                 bool turn = cb.getTurn();
                 if (cb.checkMate(turn)) {
-                    if (turn == 0) cout << "White Won" << endl;
-                    else cout << "Black Won" << endl;
+                    if (turn == 0) std::cout << "White Won" << std::endl;
+                    else std::cout << "Black Won" << std::endl;
                     quit = true;
                 }
                 else if (cb.staleMate(turn)) {
-                    cout << "Stalemate" << endl;
+                    std::cout << "Stalemate" << std::endl;
                     quit = true;
                 }
             }
@@ -35,12 +32,12 @@ int main(int argc, char *argv[]){
 
             bool turn = cb.getTurn();
             if (cb.checkMate(turn)) {
-                if (turn == 0) cout << "White Won" << endl;
-                else cout << "Black Won" << endl;
+                if (turn == 0) std::cout << "White Won" << std::endl;
+                else std::cout << "Black Won" << std::endl;
                 quit = true;
             }
             else if (cb.staleMate(turn)) {
-                cout << "Stalemate" << endl;
+                std::cout << "Stalemate" << std::endl;
                 quit = true;
             }
         }

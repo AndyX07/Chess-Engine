@@ -8,7 +8,7 @@
 using namespace MoveGen;
 
 bool MoveGen::getColor(int x, int y, char position[][8]){
-    return std::isupper(static_cast<unsigned char>(position[x][y]));
+    return std::isupper(position[x][y]);
 }
 
 void MoveGen::makeMoveP(char position[][8], int x1, int y1, int x2, int y2){
@@ -27,7 +27,7 @@ bool MoveGen::pawnPossible(int x, int y, int x1, int y1, bool pieceColor, char p
         char c = position[x1][y1];
         if(!pieceColor){
             //black
-            if(std::isupper(static_cast<unsigned char>(c))&&y1-y==1&&abs(x1-x)==1){
+            if(std::isupper(c)&&y1-y==1&&abs(x1-x)==1){
                 return true;
             }
             if(y==1){
@@ -43,7 +43,7 @@ bool MoveGen::pawnPossible(int x, int y, int x1, int y1, bool pieceColor, char p
         }
         else{
             //white
-            if(std::islower(static_cast<unsigned char>(c))&&c!='a'&&y-y1==1&&abs(x1-x)==1){
+            if(std::islower(c)&&c!='a'&&y-y1==1&&abs(x1-x)==1){
                 return true;
             }
             if(y==6){
@@ -66,7 +66,7 @@ bool MoveGen::rookPossible(int x, int y, int x1, int y1, bool pieceColor, char p
     if(x1>=0&&y1>=0&&x1<8&&y1<8&&(x!=x1||y!=y1)){
         char c = position[x1][y1];
         if(x==x1){
-            if(c=='a'||(!pieceColor&&std::isupper(static_cast<unsigned char>(c)))||(pieceColor&&std::islower(static_cast<unsigned char>(c)))){
+            if(c=='a'||(!pieceColor&&std::isupper(c))||(pieceColor&&std::islower(c))){
                 if(y1>y){
                     for(int i = y+1; i<y1; i++){
                         if(position[x][i]!='a') return false;
@@ -82,7 +82,7 @@ bool MoveGen::rookPossible(int x, int y, int x1, int y1, bool pieceColor, char p
             }
         }
         if(y==y1){
-            if(c=='a'||(!pieceColor&&std::isupper(static_cast<unsigned char>(c)))||(pieceColor&&std::islower(static_cast<unsigned char>(c)))){
+            if(c=='a'||(!pieceColor&&std::isupper(c))||(pieceColor&&std::islower(c))){
                 if(x1>x){
                     for(int i = x+1; i<x1; i++){
                         if(position[i][y]!='a') return false;
@@ -105,7 +105,7 @@ bool MoveGen::rookPossible(int x, int y, int x1, int y1, bool pieceColor, char p
 bool MoveGen::knightPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]){
     if(x1>=0&&y1>=0&&x1<8&&y1<8&&(x!=x1||y!=y1)){
         char c = position[x1][y1];
-        if(c=='a'||(!pieceColor&&std::isupper(static_cast<unsigned char>(c)))||(pieceColor&&std::islower(static_cast<unsigned char>(c)))){
+        if(c=='a'||(!pieceColor&&std::isupper(c))||(pieceColor&&std::islower(c))){
             if((abs(x-x1)==1&&abs(y-y1)==2)||(abs(x-x1)==2&&abs(y-y1)==1)){
                 return true;
             }
@@ -118,8 +118,8 @@ bool MoveGen::knightPossible(int x, int y, int x1, int y1, bool pieceColor, char
 // Bishop
 bool MoveGen::bishopPossible(int x, int y, int x1, int y1, bool pieceColor, char position[][8]){
     if(x1>=0&&y1>=0&&x1<8&&y1<8&&(x!=x1||y!=y1)){
-        if((pieceColor&&std::isupper(static_cast<unsigned char>(position[x1][y1]))))return false;
-        if((!pieceColor&&position[x1][y1]!='a'&&std::islower(static_cast<unsigned char>(position[x1][y1])))) return false;
+        if((pieceColor&&std::isupper(position[x1][y1])))return false;
+        if((!pieceColor&&position[x1][y1]!='a'&&std::islower(position[x1][y1]))) return false;
         if(x+y==x1+y1 || x-x1==y-y1){
             int xc = (x1 > x) ? 1 : -1;
             int yc = (y1 > y) ? 1 : -1;
@@ -160,10 +160,10 @@ bool MoveGen::kingPossible(int x, int y, int x1, int y1, bool pieceColor, char p
 }
 
 bool MoveGen::possible(int x, int y, int x1, int y1, char c, bool m, char position[][8]){
-    bool pieceColor = std::isupper(static_cast<unsigned char>(c));
+    bool pieceColor = std::isupper(c);
     bool res = false;
     char originalPiece = position[x1][y1];
-    char lower = std::tolower(static_cast<unsigned char>(c));
+    char lower = std::tolower(c);
     if(lower=='p') res = pawnPossible(x,y,x1,y1,pieceColor,position);
     else if(lower=='r') res = rookPossible(x,y,x1,y1,pieceColor,position);
     else if(lower=='n') res = knightPossible(x,y,x1,y1,pieceColor,position);
@@ -205,7 +205,7 @@ bool MoveGen::check(bool pieceColor, char position[][8]){
     int x=-1, y=-1;
     for(int i=0;i<8;i++){
         for(int j=0;j<8;j++){
-            if(std::tolower(static_cast<unsigned char>(position[i][j]))=='k' && getColor(i,j,position) == pieceColor){
+            if(std::tolower(position[i][j])=='k' && getColor(i,j,position) == pieceColor){
                 x = i; y = j;
                 break;
             }

@@ -13,8 +13,8 @@ int Engine::eval(char position[][8]){
         for(int j = 0; j < 8; j++){
             char c = position[i][j];
             bool pieceColor = false;
-            if(std::isupper(static_cast<unsigned char>(c))) pieceColor = true;
-            char lower = std::tolower(static_cast<unsigned char>(c));
+            if(std::isupper(c)) pieceColor = true;
+            char lower = std::tolower(c);
             if(lower=='p'){ if(pieceColor) score += 10; else score -= 10; }
             else if(lower=='r'){ if(pieceColor) score += 50; else score -= 50; }
             else if(lower=='n'){ if(pieceColor) score += 30; else score -= 30; }
